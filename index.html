@@ -51,31 +51,32 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
 
 /* ─── NUMPAD ─── */
 #numpad{position:absolute;bottom:0;left:0;right:0;z-index:10;
-  padding:6px 10px 10px;
+  padding:3px 7px 7px;
   background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(5,0,0,.85) 20%,rgba(5,0,0,.95) 100%);}
-#npDisp{text-align:center;color:#ffe94d;font-size:1.8rem;font-weight:700;
-  letter-spacing:6px;min-height:2.2rem;line-height:2.2rem;
-  text-shadow:0 0 14px rgba(255,220,0,.9);margin-bottom:5px;}
+#npDisp{text-align:center;color:#ffe94d;font-size:clamp(1.1rem,4.5vh,1.7rem);font-weight:700;
+  letter-spacing:5px;min-height:clamp(1.5rem,4.5vh,2rem);line-height:clamp(1.5rem,4.5vh,2rem);
+  text-shadow:0 0 14px rgba(255,220,0,.9);margin-bottom:3px;}
 #npDisp.bad{color:#ff2200;animation:badFlash .25s;}
 @keyframes badFlash{0%,100%{color:#ff2200}50%{color:#fff;transform:scale(1.08)}}
-.np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
-  max-width:300px;margin:0 auto;}
-.nb{padding:11px 4px;background:rgba(255,40,0,.18);
-  border:1.5px solid rgba(255,80,20,.5);border-radius:9px;
-  color:#fff;font-size:1.25rem;font-weight:700;cursor:pointer;
+#np-wrap{display:flex;gap:4px;width:100%;align-items:stretch;}
+.np-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+.nb{padding:0;height:clamp(40px,6.5vh,52px);
+  background:rgba(255,40,0,.18);border:1.5px solid rgba(255,80,20,.5);border-radius:9px;
+  color:#fff;font-size:clamp(.95rem,2.8vh,1.2rem);font-weight:700;cursor:pointer;
   transition:all .1s;font-family:'Courier New',monospace;
-  text-shadow:0 0 8px rgba(255,150,0,.5);}
+  text-shadow:0 0 8px rgba(255,150,0,.5);
+  display:flex;align-items:center;justify-content:center;}
 .nb:active{background:rgba(255,80,0,.55);transform:scale(.93);}
 .nb-fire{background:linear-gradient(135deg,rgba(200,0,0,.7),rgba(255,40,0,.7));
-  border-color:rgba(255,80,0,.9);color:#ffe;font-size:.88rem;letter-spacing:1px;}
+  border-color:rgba(255,80,0,.9);color:#ffe;font-size:clamp(.72rem,2.2vh,.88rem);letter-spacing:.5px;}
 .nb-fire:active{background:rgba(255,60,0,.9);}
-.nb-clr{background:rgba(60,60,150,.3);border-color:rgba(120,130,255,.45);color:#aac;font-size:.82rem;}
+.nb-clr{background:rgba(60,60,150,.3);border-color:rgba(120,130,255,.45);color:#aac;
+  font-size:clamp(.68rem,2vh,.82rem);}
 /* ICE BOMB side button */
-#np-wrap{display:flex;gap:6px;max-width:310px;margin:0 auto;align-items:stretch;}
 #iceBtn{
-  width:50px;flex-shrink:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  padding:6px 3px;border-radius:9px;cursor:pointer;
+  width:clamp(42px,11vw,54px);flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  padding:4px 2px;border-radius:9px;cursor:pointer;
   font-family:'Courier New',monospace;transition:all .2s;
   background:rgba(20,40,80,.35);border:1.5px solid rgba(60,100,180,.25);color:#446;
 }
@@ -428,18 +429,88 @@ function drawCity(){
 }
 
 function drawCannon(){
-  const cx=W/2, cy=GY-4;
+  const cx=W/2, cy=GY-6, t=_t();
   C.save();
-  // Base
-  C.fillStyle='rgba(80,20,0,.9)';
-  C.beginPath(); C.arc(cx,cy,14,0,Math.PI*2); C.fill();
-  C.strokeStyle='rgba(255,80,0,.7)'; C.lineWidth=1.5; C.stroke();
-  // Barrel (pointing up)
-  C.fillStyle='rgba(200,80,0,.9)';
-  C.fillRect(cx-3,cy-24,6,22);
-  // Glow ring
-  C.strokeStyle='rgba(0,255,255,.4)'; C.lineWidth=1;
-  C.beginPath(); C.arc(cx,cy,16,0,Math.PI*2); C.stroke();
+
+  // ── Outer energy aura (pulsing) ──
+  const pulse=0.55+0.3*Math.sin(t*3.5);
+  const aura=C.createRadialGradient(cx,cy,0,cx,cy,48);
+  aura.addColorStop(0,`rgba(0,220,255,${pulse*.18})`);
+  aura.addColorStop(.5,`rgba(0,160,255,${pulse*.08})`);
+  aura.addColorStop(1,'rgba(0,120,255,0)');
+  C.fillStyle=aura; C.beginPath(); C.arc(cx,cy,48,0,Math.PI*2); C.fill();
+
+  // ── Platform base (trapezoid) ──
+  C.fillStyle='#0e0800';
+  C.beginPath();
+  C.moveTo(cx-34,cy+6); C.lineTo(cx+34,cy+6);
+  C.lineTo(cx+24,cy-10); C.lineTo(cx-24,cy-10);
+  C.closePath(); C.fill();
+  C.strokeStyle='rgba(255,80,0,.45)'; C.lineWidth=1; C.stroke();
+
+  // ── Turret body ──
+  const tg=C.createRadialGradient(cx-6,cy-6,1,cx,cy,20);
+  tg.addColorStop(0,'#2a1000'); tg.addColorStop(1,'#080300');
+  C.fillStyle=tg;
+  C.beginPath(); C.arc(cx,cy,20,0,Math.PI*2); C.fill();
+
+  // ── Spinning energy ring ──
+  C.save(); C.translate(cx,cy); C.rotate(t*1.8);
+  for(let i=0;i<6;i++){
+    const a=(i/6)*Math.PI*2;
+    const rx=Math.cos(a)*16, ry=Math.sin(a)*16;
+    C.strokeStyle=`rgba(0,200,255,${0.3+0.2*Math.sin(t*4+i)})`;
+    C.lineWidth=1;
+    C.beginPath(); C.arc(rx,ry,2.5,0,Math.PI*2); C.stroke();
+    if(i%2===0){
+      C.strokeStyle='rgba(0,160,255,.18)';
+      C.lineWidth=.8;
+      C.beginPath(); C.moveTo(0,0); C.lineTo(rx,ry); C.stroke();
+    }
+  }
+  C.restore();
+
+  // ── Outer glow ring ──
+  C.strokeStyle=`rgba(0,220,255,${0.4+0.25*Math.sin(t*4)})`;
+  C.lineWidth=2;
+  C.beginPath(); C.arc(cx,cy,26,0,Math.PI*2); C.stroke();
+  // Thin outer ring
+  C.strokeStyle=`rgba(0,180,255,${0.18+0.1*Math.sin(t*3+1)})`;
+  C.lineWidth=1;
+  C.beginPath(); C.arc(cx,cy,32,0,Math.PI*2); C.stroke();
+
+  // ── Barrel housing ──
+  C.fillStyle='#1a0a00';
+  C.fillRect(cx-7,cy-50,14,38);
+  // Barrel highlight stripe
+  C.fillStyle='rgba(100,50,0,.7)';
+  C.fillRect(cx-6,cy-50,4,38);
+  // Barrel segments (detail)
+  C.strokeStyle='rgba(255,80,0,.3)'; C.lineWidth=1;
+  for(let i=0;i<4;i++){
+    C.beginPath(); C.moveTo(cx-7,cy-18-i*9); C.lineTo(cx+7,cy-18-i*9); C.stroke();
+  }
+
+  // ── Muzzle energy charge ──
+  const charge=0.7+0.3*Math.sin(t*7);
+  const mg=C.createRadialGradient(cx,cy-50,0,cx,cy-50,14);
+  mg.addColorStop(0,`rgba(180,240,255,${charge*.9})`);
+  mg.addColorStop(.3,`rgba(0,200,255,${charge*.7})`);
+  mg.addColorStop(1,'rgba(0,100,255,0)');
+  C.fillStyle=mg; C.beginPath(); C.arc(cx,cy-50,14,0,Math.PI*2); C.fill();
+  // Muzzle cap
+  C.fillStyle=`rgba(20,${Math.floor(180+60*charge)},255,0.9)`;
+  C.beginPath(); C.arc(cx,cy-50,5,0,Math.PI*2); C.fill();
+  C.strokeStyle=`rgba(200,240,255,${charge})`;
+  C.lineWidth=1.5; C.stroke();
+
+  // ── Energy core in turret center ──
+  const cg=C.createRadialGradient(cx,cy,0,cx,cy,8);
+  cg.addColorStop(0,`rgba(150,230,255,${0.8+0.2*Math.sin(t*5)})`);
+  cg.addColorStop(.5,`rgba(0,180,255,.5)`);
+  cg.addColorStop(1,'rgba(0,100,200,0)');
+  C.fillStyle=cg; C.beginPath(); C.arc(cx,cy,8,0,Math.PI*2); C.fill();
+
   C.restore();
 }
 

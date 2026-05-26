@@ -70,11 +70,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
   border-color:rgba(255,80,0,.9);color:#ffe;font-size:.88rem;letter-spacing:1px;}
 .nb-fire:active{background:rgba(255,60,0,.9);}
 .nb-clr{background:rgba(60,60,150,.3);border-color:rgba(120,130,255,.45);color:#aac;font-size:.82rem;}
-.nb-ice{background:linear-gradient(135deg,rgba(0,120,255,.5),rgba(0,80,200,.5));
-  border-color:rgba(80,180,255,.8);color:#aef;font-size:.8rem;
-  display:none;margin-top:5px;}
-#iceRow{max-width:300px;margin:0 auto;}
-#iceBtn{width:100%;padding:9px;font-family:'Courier New',monospace;}
+/* ICE BOMB side button */
+#np-wrap{display:flex;gap:6px;max-width:310px;margin:0 auto;align-items:stretch;}
+#iceBtn{
+  width:50px;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:6px 3px;border-radius:9px;cursor:pointer;
+  font-family:'Courier New',monospace;transition:all .2s;
+  background:rgba(20,40,80,.35);border:1.5px solid rgba(60,100,180,.25);color:#446;
+}
+#iceBtn.ready{
+  background:linear-gradient(180deg,rgba(0,110,240,.55),rgba(0,70,190,.55));
+  border-color:rgba(80,190,255,.85);color:#bef;
+  box-shadow:0 0 12px rgba(0,160,255,.45),inset 0 0 8px rgba(0,200,255,.15);
+  animation:iceReady 1.5s ease-in-out infinite;
+}
+@keyframes iceReady{0%,100%{box-shadow:0 0 10px rgba(0,160,255,.4)}50%{box-shadow:0 0 22px rgba(0,200,255,.8)}}
+#iceBtn:active{transform:scale(.93);}
+#iceBtn .ice-ico{font-size:1.4rem;line-height:1;}
+#iceBtn .ice-lbl{font-size:.58rem;letter-spacing:.5px;text-align:center;line-height:1.3;}
+#iceBtn .ice-cnt{font-size:.8rem;font-weight:700;}
 
 /* ─── SCREENS ─── */
 .sc{position:absolute;inset:0;z-index:20;display:none;flex-direction:column;
@@ -164,22 +179,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
   <!-- NUMPAD -->
   <div id="numpad">
     <div id="npDisp">_</div>
-    <div class="np-grid">
-      <button class="nb" ontouchstart="nb(7)" onclick="nb(7)">7</button>
-      <button class="nb" ontouchstart="nb(8)" onclick="nb(8)">8</button>
-      <button class="nb" ontouchstart="nb(9)" onclick="nb(9)">9</button>
-      <button class="nb" ontouchstart="nb(4)" onclick="nb(4)">4</button>
-      <button class="nb" ontouchstart="nb(5)" onclick="nb(5)">5</button>
-      <button class="nb" ontouchstart="nb(6)" onclick="nb(6)">6</button>
-      <button class="nb" ontouchstart="nb(1)" onclick="nb(1)">1</button>
-      <button class="nb" ontouchstart="nb(2)" onclick="nb(2)">2</button>
-      <button class="nb" ontouchstart="nb(3)" onclick="nb(3)">3</button>
-      <button class="nb nb-clr" ontouchstart="nbClr()" onclick="nbClr()">CLEAR</button>
-      <button class="nb" ontouchstart="nb(0)" onclick="nb(0)">0</button>
-      <button class="nb nb-fire" ontouchstart="nbFire()" onclick="nbFire()">🔥 FIRE</button>
-    </div>
-    <div id="iceRow">
-      <button class="nb nb-ice" id="iceBtn" ontouchstart="useIce()" onclick="useIce()">❄️ ICE BOMB  ×<span id="iceCount">0</span></button>
+    <div id="np-wrap">
+      <button id="iceBtn" ontouchstart="useIce()" onclick="useIce()" disabled>
+        <span class="ice-ico">❄️</span>
+        <span class="ice-lbl">ICE<br>BOMB</span>
+        <span class="ice-cnt">×<span id="iceCount">0</span></span>
+      </button>
+      <div class="np-grid">
+        <button class="nb" ontouchstart="nb(7)" onclick="nb(7)">7</button>
+        <button class="nb" ontouchstart="nb(8)" onclick="nb(8)">8</button>
+        <button class="nb" ontouchstart="nb(9)" onclick="nb(9)">9</button>
+        <button class="nb" ontouchstart="nb(4)" onclick="nb(4)">4</button>
+        <button class="nb" ontouchstart="nb(5)" onclick="nb(5)">5</button>
+        <button class="nb" ontouchstart="nb(6)" onclick="nb(6)">6</button>
+        <button class="nb" ontouchstart="nb(1)" onclick="nb(1)">1</button>
+        <button class="nb" ontouchstart="nb(2)" onclick="nb(2)">2</button>
+        <button class="nb" ontouchstart="nb(3)" onclick="nb(3)">3</button>
+        <button class="nb nb-clr" ontouchstart="nbClr()" onclick="nbClr()">CLEAR</button>
+        <button class="nb" ontouchstart="nb(0)" onclick="nb(0)">0</button>
+        <button class="nb nb-fire" ontouchstart="nbFire()" onclick="nbFire()">🔥 FIRE</button>
+      </div>
     </div>
   </div>
 
@@ -673,7 +692,8 @@ function fire(){
   if(G.streak%5===0){
     G.ice++;
     const ib=document.getElementById('iceBtn');
-    ib.style.display='block';
+    ib.classList.add('ready');
+    ib.disabled=false;
     document.getElementById('iceCount').textContent=G.ice;
     G.floats.push({x:tgt.x,y:tgt.y-42,txt:'❄️ ICE BOMB!',col:'#88ccff',a:1});
   }
@@ -707,10 +727,10 @@ function cityHit(m){
 function useIce(){
   if(!G.ice||G.st!=='playing') return;
   G.ice--;
-  G.slowF=480; // ~8 seconds at 60fps
+  G.slowF=480;
   const ib=document.getElementById('iceBtn');
   document.getElementById('iceCount').textContent=G.ice;
-  if(!G.ice) ib.style.display='none';
+  if(!G.ice){ ib.classList.remove('ready'); ib.disabled=true; }
   G.floats.push({x:W/2,y:GY/2,txt:'❄️ SLOW TIME! ❄️',col:'#aaddff',a:1});
   playSnd('ice');
 }
@@ -792,7 +812,8 @@ function startGame(){
   G.st='playing';
   document.getElementById('hpInner').style.width='100%';
   document.getElementById('hpInner').style.background='linear-gradient(90deg,#f00,#f60,#3f3)';
-  document.getElementById('iceBtn').style.display='none';
+  const ib=document.getElementById('iceBtn');
+  ib.classList.remove('ready'); ib.disabled=true;
   document.getElementById('iceCount').textContent='0';
   updateDisp();
   genWorld();

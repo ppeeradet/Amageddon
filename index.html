@@ -181,24 +181,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
   <div id="numpad">
     <div id="npDisp">_</div>
     <div id="np-wrap">
-      <button id="iceBtn" ontouchstart="useIce()" onclick="useIce()" disabled>
+      <button id="iceBtn" onclick="useIce()" disabled>
         <span class="ice-ico">❄️</span>
         <span class="ice-lbl">ICE<br>BOMB</span>
         <span class="ice-cnt">×<span id="iceCount">0</span></span>
       </button>
       <div class="np-grid">
-        <button class="nb" ontouchstart="nb(7)" onclick="nb(7)">7</button>
-        <button class="nb" ontouchstart="nb(8)" onclick="nb(8)">8</button>
-        <button class="nb" ontouchstart="nb(9)" onclick="nb(9)">9</button>
-        <button class="nb" ontouchstart="nb(4)" onclick="nb(4)">4</button>
-        <button class="nb" ontouchstart="nb(5)" onclick="nb(5)">5</button>
-        <button class="nb" ontouchstart="nb(6)" onclick="nb(6)">6</button>
-        <button class="nb" ontouchstart="nb(1)" onclick="nb(1)">1</button>
-        <button class="nb" ontouchstart="nb(2)" onclick="nb(2)">2</button>
-        <button class="nb" ontouchstart="nb(3)" onclick="nb(3)">3</button>
-        <button class="nb nb-clr" ontouchstart="nbClr()" onclick="nbClr()">CLEAR</button>
-        <button class="nb" ontouchstart="nb(0)" onclick="nb(0)">0</button>
-        <button class="nb nb-fire" ontouchstart="nbFire()" onclick="nbFire()">🔥 FIRE</button>
+        <button class="nb" onclick="nb(7)">7</button>
+        <button class="nb" onclick="nb(8)">8</button>
+        <button class="nb" onclick="nb(9)">9</button>
+        <button class="nb" onclick="nb(4)">4</button>
+        <button class="nb" onclick="nb(5)">5</button>
+        <button class="nb" onclick="nb(6)">6</button>
+        <button class="nb" onclick="nb(1)">1</button>
+        <button class="nb" onclick="nb(2)">2</button>
+        <button class="nb" onclick="nb(3)">3</button>
+        <button class="nb nb-clr" onclick="nbClr()">CLEAR</button>
+        <button class="nb" onclick="nb(0)">0</button>
+        <button class="nb nb-fire" onclick="nbFire()">🔥 FIRE</button>
       </div>
     </div>
   </div>
@@ -213,11 +213,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;
              autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
       <button class="btn-r" onclick="startGame()">🔥 เริ่มป้องกันโลก!</button>
       <button class="btn-s" onclick="showLB()">🏆 Leaderboard</button>
-      <div style="margin-top:14px;border-top:1px solid rgba(255,80,0,.2);padding-top:12px;
-                  font-size:.78rem;line-height:1.9;color:#cc7744;text-align:center;">
+      <div style="margin-top:14px;border-top:1px solid rgba(255,80,0,.3);padding-top:12px;
+                  font-size:.82rem;line-height:2;color:#e8945a;text-align:center;">
         ☄️ อุกกาบาตกำลังถล่มเมือง มาช่วยคำนวณ<br>
-        ตอบถูกต่อเนื่อง จะได้ <span style="color:#88ccff;">❄️ ICE BOMB</span> ใช้สำหรับชะลอเวลา<br>
-        <span style="color:#ff6655;">ระวัง อย่าให้แถบพลังหมดซะก่อนหละ</span>
+        ตอบถูกต่อเนื่อง จะได้ <span style="color:#99ddff;">❄️ ICE BOMB</span> ใช้สำหรับชะลอเวลา<br>
+        <span style="color:#ff7766;">ระวัง อย่าให้แถบพลังหมดซะก่อนหละ</span>
       </div>
     </div>
   </div>
